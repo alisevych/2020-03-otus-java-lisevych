@@ -1,2 +1,7 @@
-# 2020-03-otus-java-lisevych
-Otus. Java Developer course. March 2020 
+# Домашние задания курса "Разработчик Java" в OTUS
+
+Группа 2020-03
+
+### Студент
+Alena Lisevych (Алёна Лисевич)<br>
+alena.lisevych@gmail.com
