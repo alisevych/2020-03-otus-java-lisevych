@@ -13,11 +13,11 @@ dependencies {
 }
 
 shadowJar {
-    archiveBaseName.set('helloGuava')
+    archiveBaseName.set('helloOtus')
     archiveVersion.set('0.1')
     archiveClassifier.set('')
     manifest {
-        attributes 'Main-Class': 'ru.otus.HelloGuava'
+        attributes 'Main-Class': 'ru.otus.HelloOtus'
     }
 }
 
