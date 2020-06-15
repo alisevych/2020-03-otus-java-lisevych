@@ -22,12 +22,6 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# Ignore Gradle project-specific cache directory
-.gradle
-
-# Ignore Gradle build output directory
-build
-
 #Idea
 *.iml
 *.iws
@@ -35,9 +29,15 @@ build
 *.idea
 generated_tests
 
-gradlew
-gradlew.*.gradle
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
 /build/
+
+gradlew
+gradlew.*
 
 # Ignore Gradle GUI config
 gradle-app.setting
