@@ -1,4 +1,4 @@
-package ru.otus;
+package ru.otus.helpers;
 
 import java.util.Map;
 import java.util.TreeMap;

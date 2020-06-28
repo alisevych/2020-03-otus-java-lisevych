@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DiyGsonTest {
 
     /** Uncomment 1 Gson initializing */
-    // Gson myGson = new Gson();
+    //Gson myGson = new Gson();
     DiyGson myGson = new DiyGsonImpl();
 
     @DisplayName("Primitives save to Json")
