@@ -2,6 +2,7 @@ package ru.otus;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 import javax.json.*;
 
@@ -17,37 +18,37 @@ public class DiyGsonImpl implements DiyGson {
     private JsonObjectBuilder parseObject(Object obj) {
         var bigJson = Json.createObjectBuilder();
         for (Field field : obj.getClass().getDeclaredFields()) {
-            bigJson.addAll(parseField(field, obj));
+            var fieldJson = parseField(field, obj);
+            if (fieldJson != null) {
+                bigJson.addAll(fieldJson);
+            }
         }
         return bigJson;
     }
 
     private JsonObjectBuilder parseField(Field field, Object object) {
-        var smallJson = Json.createObjectBuilder();
+        var fieldJson = Json.createObjectBuilder();
         var fieldType = field.getType();
-        if ((fieldType.isPrimitive())
-                || (fieldType.equals(String.class))){
-            smallJson.add(field.getName(), getValueFromField(field, object));
-        } else if (fieldType.isArray()) {
-            smallJson.add(field.getName(), getValuesFromArray(field, object));
-        } else {
-            throw new UnsupportedOperationException("Field type is " + fieldType);
-            //List, Set, Map, other objects
-        }
-        return smallJson;
-    }
-
-    private String getValueFromField(Field field, Object obj) {
-        if (Modifier.isPrivate(field.getModifiers()))
-            field.setAccessible(true);
-        try {
-            return field.get(obj).toString();
-        } catch ( IllegalAccessException e) {
+        Object value = getObjectValueFromField(field, object);
+        if (value == null) {
             return null;
         }
+        if ( (fieldType.isPrimitive())
+                ||  (fieldType.equals(String.class)) ){
+            fieldJson.add(field.getName(), value.toString());
+        } else if (fieldType.isArray()) {
+                fieldJson.add(field.getName(), getValuesFromArray((Object[]) value));
+        } else if (value instanceof java.util.List) {
+            fieldJson.add(field.getName(), getValuesFromList(value));
+        //} else if (value instanceof java.util.Set) {
+        //fieldJson.add(field.getName(), getValuesFromSet(value));
+        //} else if (value instanceof java.util.Map) {
+        //    fieldJson.add(field.getName(), getValuesFromMap(value));
+        }
+        return fieldJson;
     }
 
-    private JsonArrayBuilder getValuesFromArray(Field field, Object src){
+    private Object getObjectValueFromField(Field field, Object src) {
         if (Modifier.isPrivate(field.getModifiers()))
             field.setAccessible(true);
         Object value;
@@ -56,24 +57,36 @@ public class DiyGsonImpl implements DiyGson {
         } catch ( IllegalAccessException e) {
             return null;
         }
-        if (value == null) {
-            return null;
-        }
-        if (!value.getClass().isArray())
-            throw new IllegalArgumentException("Array type expected but found " + value.getClass());
+        return value;
+    }
+
+    private JsonArrayBuilder getValuesFromArray(Object[] array){
+        if (!array.getClass().isArray())
+            throw new IllegalArgumentException("Array type expected but found " + array.getClass());
         var arrayJson = Json.createArrayBuilder();
-        for (Object element: (Object[]) value) {
-            if (element == null) {
-                arrayJson.addNull();
-            } else if ( (element.getClass().isPrimitive() )
-                    || (element.getClass().equals(String.class))) {
-                arrayJson.add(element.toString());
-            } else {
-                //ToDo for Object types
-                arrayJson.add(parseObject(element));
-            }
+        for (Object element: array) {
+            parseElement(element, arrayJson);
         }
         return arrayJson;
+    }
+
+    private JsonArrayBuilder getValuesFromList(Object list) {
+        var arrayJson = Json.createArrayBuilder();
+        for (Object element : (List) list) {
+            parseElement(element, arrayJson);
+        }
+        return arrayJson;
+    }
+
+    private void parseElement (Object element, JsonArrayBuilder arrayBuilder) {
+        if (element == null) {
+            arrayBuilder.addNull();
+        } else if ( (element.getClass().isPrimitive() )
+                || (element.getClass().equals(String.class))) {
+            arrayBuilder.add(element.toString());
+        } else {
+            arrayBuilder.add(parseObject(element));
+        }
     }
 
 }

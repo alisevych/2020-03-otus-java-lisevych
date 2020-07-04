@@ -42,7 +42,7 @@ public class DiyGsonTest {
         System.out.println("================================");
     }
 
-    @DisplayName("List and primitives save to Json")
+    @DisplayName("List of primitives save to Json")
     @Test
     public void listToJson() {
         System.out.println("======== test ===================");
@@ -50,6 +50,20 @@ public class DiyGsonTest {
         String myJson = myGson.toJson(obj);
         System.out.println(myJson);
         var obj2 = new Gson().fromJson(myJson, BagWithList.class);
+        assertEquals(obj, obj2);
+        System.out.println("================================");
+    }
+
+    @DisplayName("List of Bags of primitives save to Json")
+    @Test
+    public void listOfBagsOfPrimitivesToJson() {
+        System.out.println("======== test ===================");
+        var obj = new BagWithListOfBags(75,
+                Arrays.asList(new BagOfPrimitives(1,"2",3), new BagOfPrimitives(4,"5",6)),
+                "one seventh");
+        String myJson = myGson.toJson(obj);
+        System.out.println(myJson);
+        var obj2 = new Gson().fromJson(myJson, BagWithListOfBags.class);
         assertEquals(obj, obj2);
         System.out.println("================================");
     }
@@ -96,6 +110,18 @@ public class DiyGsonTest {
         System.out.println(myJson);
         var obj2 = new Gson().fromJson(myJson, BagOfPrimitives.class);
         assertEquals(null, obj2);
+        System.out.println("================================");
+    }
+
+    @DisplayName("Null field save to Json")
+    @Test
+    public void nullFieldToJson() {
+        System.out.println("======== test ===================");
+        var obj = new BagOfPrimitives(22, null, 10);
+        String myJson = myGson.toJson(obj);
+        System.out.println(myJson);
+        var obj2 = new Gson().fromJson(myJson, BagOfPrimitives.class);
+        assertEquals(obj, obj2);
         System.out.println("================================");
     }
 
