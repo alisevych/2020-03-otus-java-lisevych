@@ -3,6 +3,7 @@ package ru.otus;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Map;
 
 import javax.json.*;
 
@@ -12,18 +13,23 @@ public class DiyGsonImpl implements DiyGson {
         if (src == null){
             return "null";
         }
+        if ( (src.getClass().isPrimitive() )
+                || (src.getClass().equals(String.class))) {
+            return src.toString();
+        }
         return parseObject(src).build().toString();
     }
 
     private JsonObjectBuilder parseObject(Object obj) {
-        var bigJson = Json.createObjectBuilder();
-        for (Field field : obj.getClass().getDeclaredFields()) {
+        var objBuilder = Json.createObjectBuilder();
+        var fields = obj.getClass().getDeclaredFields();
+        for (Field field : fields) {
             var fieldJson = parseField(field, obj);
             if (fieldJson != null) {
-                bigJson.addAll(fieldJson);
+                objBuilder.addAll(fieldJson);
             }
         }
-        return bigJson;
+        return objBuilder;
     }
 
     private JsonObjectBuilder parseField(Field field, Object object) {
@@ -39,11 +45,11 @@ public class DiyGsonImpl implements DiyGson {
         } else if (fieldType.isArray()) {
                 fieldJson.add(field.getName(), getValuesFromArray((Object[]) value));
         } else if (value instanceof java.util.List) {
-            fieldJson.add(field.getName(), getValuesFromList(value));
+            fieldJson.add(field.getName(), getValuesFromList((List) value));
         //} else if (value instanceof java.util.Set) {
         //fieldJson.add(field.getName(), getValuesFromSet(value));
-        //} else if (value instanceof java.util.Map) {
-        //    fieldJson.add(field.getName(), getValuesFromMap(value));
+        } else if (value instanceof java.util.Map) {
+            fieldJson.add(field.getName(), getValuesFromMap((Map) value));
         }
         return fieldJson;
     }
@@ -70,12 +76,19 @@ public class DiyGsonImpl implements DiyGson {
         return arrayJson;
     }
 
-    private JsonArrayBuilder getValuesFromList(Object list) {
+    private JsonArrayBuilder getValuesFromList(List list) {
         var arrayJson = Json.createArrayBuilder();
-        for (Object element : (List) list) {
+        for (Object element : list) {
             parseElement(element, arrayJson);
         }
         return arrayJson;
+    }
+
+    private JsonObjectBuilder getValuesFromMap(Map map) {
+        var mapJson = Json.createObjectBuilder();
+        //ToDo support different classes of values
+        map.forEach((k,v) -> mapJson.add(k.toString(), v.toString()));
+        return mapJson;
     }
 
     private void parseElement (Object element, JsonArrayBuilder arrayBuilder) {

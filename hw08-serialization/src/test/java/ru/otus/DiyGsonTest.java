@@ -15,7 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DiyGsonTest {
 
     /** Uncomment 1 Gson initializing */
-    //Gson myGson = new Gson();
+    //
+    // Gson myGson = new Gson();
     DiyGson myGson = new DiyGsonImpl();
 
     @DisplayName("Primitives save to Json")
@@ -26,6 +27,18 @@ public class DiyGsonTest {
         String myJson = myGson.toJson(obj);
         System.out.println(myJson);
         var obj2 = new Gson().fromJson(myJson, BagOfPrimitives.class);
+        assertEquals(obj, obj2);
+        System.out.println("================================");
+    }
+
+    @DisplayName("String save to Json")
+    @Test
+    public void stringToJson() {
+        System.out.println("======== test ===================");
+        var obj ="string";
+        String myJson = myGson.toJson(obj);
+        System.out.println(myJson);
+        var obj2 = new Gson().fromJson(myJson, String.class);
         assertEquals(obj, obj2);
         System.out.println("================================");
     }
