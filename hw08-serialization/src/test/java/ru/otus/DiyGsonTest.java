@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,8 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DiyGsonTest {
 
     /** Uncomment 1 Gson initializing */
-    //
-    // Gson myGson = new Gson();
+    //Gson myGson = new Gson();
     DiyGson myGson = new DiyGsonImpl();
 
     @DisplayName("Primitives save to Json")
@@ -227,5 +223,22 @@ public class DiyGsonTest {
         assertEquals(obj, obj2);
         System.out.println("================================");
     }
+
+    @DisplayName("Set of primitives save to Json")
+    @Test
+    public void setToJson() {
+        System.out.println("======== test ===================");
+        var newSet =  new HashSet<Integer>();
+        newSet.add(110);
+        newSet.add(130);
+        newSet.add(235);
+        var obj = new BagWithSet(255, newSet, "set");
+        String myJson = myGson.toJson(obj);
+        System.out.println(myJson);
+        var obj2 = new Gson().fromJson(myJson, BagWithSet.class);
+        assertEquals(obj, obj2);
+        System.out.println("================================");
+    }
+
 
 }

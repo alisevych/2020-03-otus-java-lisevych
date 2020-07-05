@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.json.*;
 
@@ -13,9 +14,8 @@ public class DiyGsonImpl implements DiyGson {
         if (src == null){
             return "null";
         }
-        if ( (src.getClass().isPrimitive() )
-                || (src.getClass().equals(String.class))) {
-            return src.toString();
+        if ( isObjectSimple(src)) {
+            return "\"" + src.toString() + "\"";
         }
         return parseObject(src).build().toString();
     }
@@ -39,17 +39,16 @@ public class DiyGsonImpl implements DiyGson {
         if (value == null) {
             return null;
         }
-        if ( (fieldType.isPrimitive())
-                ||  (fieldType.equals(String.class)) ){
+        if ( isObjectSimple(value) ){
             fieldJson.add(field.getName(), value.toString());
         } else if (fieldType.isArray()) {
                 fieldJson.add(field.getName(), getValuesFromArray((Object[]) value));
         } else if (value instanceof java.util.List) {
-            fieldJson.add(field.getName(), getValuesFromList((List) value));
-        //} else if (value instanceof java.util.Set) {
-        //fieldJson.add(field.getName(), getValuesFromSet(value));
+            fieldJson.add(field.getName(), getValuesFromList((List<?>) value));
+        } else if (value instanceof java.util.Set) {
+        fieldJson.add(field.getName(), getValuesFromSet((Set<?>) value));
         } else if (value instanceof java.util.Map) {
-            fieldJson.add(field.getName(), getValuesFromMap((Map) value));
+            fieldJson.add(field.getName(), getValuesFromMap((Map<?,?>) value));
         }
         return fieldJson;
     }
@@ -76,7 +75,7 @@ public class DiyGsonImpl implements DiyGson {
         return arrayJson;
     }
 
-    private JsonArrayBuilder getValuesFromList(List list) {
+    private JsonArrayBuilder getValuesFromList(List<?> list) {
         var arrayJson = Json.createArrayBuilder();
         for (Object element : list) {
             parseElement(element, arrayJson);
@@ -84,22 +83,49 @@ public class DiyGsonImpl implements DiyGson {
         return arrayJson;
     }
 
-    private JsonObjectBuilder getValuesFromMap(Map map) {
+    private JsonArrayBuilder getValuesFromSet(Set<?> set) {
+        var arrayJson = Json.createArrayBuilder();
+        for (Object element : set) {
+            parseElement(element, arrayJson);
+        }
+        return arrayJson;
+    }
+
+    private JsonObjectBuilder getValuesFromMap(Map<?,?> map) {
         var mapJson = Json.createObjectBuilder();
-        //ToDo support different classes of values
-        map.forEach((k,v) -> mapJson.add(k.toString(), v.toString()));
+        map.forEach((k,v) -> {
+            if (isObjectSimple(k)) {
+                if (isObjectSimple(v)) {
+                    mapJson.add(k.toString(), v.toString());
+                } else {
+                    mapJson.add(k.toString(), parseObject(v));
+                }
+            } else {
+                throw new UnsupportedOperationException("Key in Map is not of simple type: "+ k.getClass());
+            }
+        });
         return mapJson;
     }
 
     private void parseElement (Object element, JsonArrayBuilder arrayBuilder) {
         if (element == null) {
             arrayBuilder.addNull();
-        } else if ( (element.getClass().isPrimitive() )
-                || (element.getClass().equals(String.class))) {
+        } else if ( isObjectSimple( element)) {
             arrayBuilder.add(element.toString());
         } else {
             arrayBuilder.add(parseObject(element));
         }
+    }
+
+    private boolean isObjectSimple (Object obj) {
+        var objClass = obj.getClass();
+        return (objClass.isPrimitive() ) ||
+                (objClass.equals(String.class)) ||
+                (objClass.equals(Integer.class)) ||
+                (objClass.equals(Long.class)) ||
+                (objClass.equals(Short.class)) ||
+                (objClass.equals(Byte.class)) ||
+                (objClass.equals(Boolean.class));
     }
 
 }
