@@ -24,8 +24,8 @@ public class BagWithTwoMaps {
     return "BagWithMap{" +
         "value1=" + value1 +
         ", map1='" + map1 +
-        ", map2='" + map2 +
-        ", value3=" + value3 +
+        "', map2='" + map2 +
+        "', value3=" + value3 +
         '}';
   }
 

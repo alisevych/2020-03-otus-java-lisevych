@@ -20,7 +20,7 @@ public class BagWithMap {
     return "BagWithMap{" +
         "value1=" + value1 +
         ", map='" + map +
-        ", value3=" + value3 +
+        "', value3=" + value3 +
         '}';
   }
 

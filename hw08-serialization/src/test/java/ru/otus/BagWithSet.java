@@ -18,8 +18,8 @@ public class BagWithSet {
   public String toString() {
     return "BagWithMap{" +
         "value1=" + value1 +
-        ", set=" + set +
-        ", value3=" + value3 +
+        ", set='" + set +
+        "', value3=" + value3 +
         '}';
   }
 

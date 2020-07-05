@@ -19,7 +19,7 @@ public class BagWithListOfBags {
     return "BagWithList{" +
         "value1=" + value1 +
         ", bagsList='" + bagList +
-        ", value3=" + value3 +
+        "', value3=" + value3 +
         '}';
   }
 

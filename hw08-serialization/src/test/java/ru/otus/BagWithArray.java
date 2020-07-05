@@ -18,8 +18,8 @@ public class BagWithArray {
   public String toString() {
     return "BagWithArray{" +
         "value1=" + value1 +
-        ", array='" + array + '\'' +
-        ", value3=" + value3 +
+        ", array='" + array +
+        "', value3=" + value3 +
         '}';
   }
 

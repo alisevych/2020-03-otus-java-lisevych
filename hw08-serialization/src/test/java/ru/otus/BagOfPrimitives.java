@@ -17,7 +17,7 @@ public class BagOfPrimitives {
     public String toString() {
         return "BagOfPrimitives{" +
                 "value1=" + value1 +
-                ", value2='" + value2 + '\'' +
+                ", value2=" + value2 +
                 ", value3=" + value3 +
                 '}';
     }
