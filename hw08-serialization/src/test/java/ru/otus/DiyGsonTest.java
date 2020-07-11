@@ -11,8 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("DIY Gson.toJson() tests")
 public class DiyGsonTest {
 
-    /** Uncomment 1 Gson initializing */
-    //Gson myGson = new Gson();
     DiyGson myGson = new DiyGsonImpl();
 
     @DisplayName("Primitives save to Json")
@@ -240,5 +238,25 @@ public class DiyGsonTest {
         System.out.println("================================");
     }
 
+    @DisplayName("Tricky test")
+    @Test
+    public void test() {
+        var gson = new Gson();
+        assertEquals(gson.toJson(null), myGson.toJson(null));
+        assertEquals(gson.toJson((byte)1), myGson.toJson((byte)1));
+        assertEquals(gson.toJson((short)1f), myGson.toJson((short)1f));
+        assertEquals(gson.toJson(1), myGson.toJson(1));
+        assertEquals(gson.toJson(1L), myGson.toJson(1L));
+        assertEquals(gson.toJson(1f), myGson.toJson(1f));
+        assertEquals(gson.toJson(1d), myGson.toJson(1d));
+        assertEquals(gson.toJson("aaa"), myGson.toJson("aaa"));
+        assertEquals(gson.toJson(true), myGson.toJson(true));
+        assertEquals(gson.toJson('a'), myGson.toJson('a'));
+        assertEquals(gson.toJson(new int[] {1, 2, 3}), myGson.toJson(new int[] {1, 2, 3}));
+        assertEquals(gson.toJson(new long[] {1, 2, 3}), myGson.toJson(new long[] {1, 2, 3}));
+        assertEquals(gson.toJson(new char[] {'a','b','c'}), myGson.toJson(new char[] {'a','b','c'}));
+        assertEquals(gson.toJson(List.of(1, 2 ,3)), myGson.toJson(List.of(1, 2 ,3)));
+        assertEquals(gson.toJson(Collections.singletonList(1)), myGson.toJson(Collections.singletonList(1)));
+    }
 
 }
