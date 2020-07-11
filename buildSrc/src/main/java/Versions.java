@@ -7,5 +7,6 @@ public interface Versions {
     String protobuf = "3.12.1";
     String jaxbApi = "2.3.1";
     String testcontainers = "1.13.0";
+    String assertJ = "3.6.1";
     String postgresql = "42.2.5";
 }
