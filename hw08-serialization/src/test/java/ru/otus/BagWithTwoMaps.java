@@ -1,6 +1,6 @@
 package ru.otus;
 
-import ru.otus.helpers.TreeMapHelper;
+import ru.otus.helpers.HashMapHelper;
 
 import java.util.Map;
 import java.util.Objects;
@@ -13,9 +13,9 @@ public class BagWithTwoMaps {
 
   BagWithTwoMaps(int value1, Map<String, String> map1, Map<String, Integer> map2, String value3) {
     this.value1 = value1;
-    var treeMapHelper = new TreeMapHelper();
-    this.map1 = treeMapHelper.deepMapCopy(map1);
-    this.map2 = treeMapHelper.deepMapCopy(map2);
+    var hashMapHelper = new HashMapHelper();
+    this.map1 = hashMapHelper.deepMapCopy(map1);
+    this.map2 = hashMapHelper.deepMapCopy(map2);
     this.value3 = value3;
   }
 
